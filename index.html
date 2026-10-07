@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دعوت‌نامه و رزرو چکاپ تخصصی سلامت</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --accent: #0ea5e9;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Vazirmatn', system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            /* بافت مهندسی پزشکی شبیه به کاغذ شطرنجی ECG */
+            background-image: 
+                radial-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(to right, rgba(14, 165, 233, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+            background-size: 20px 20px, 40px 40px, 40px 40px;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px -5px rgba(2, 132, 199, 0.12), 0 0 0 1px rgba(2, 132, 199, 0.06);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* نوار بالای فرم با المان ضربان قلب */
+        .header {
+            background: linear-gradient(135deg, #0284c7, #075985);
+            color: #ffffff;
+            padding: 2rem 2rem 1.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8, #38bdf8);
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: #e0f2fe;
+            opacity: 0.9;
+        }
+
+        /* مراحل پیشرفت */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: #f1f5f9;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.3s;
+        }
+
+        .step-item.active {
+            color: var(--primary);
+        }
+
+        .step-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #cbd5e1;
+            color: #ffffff;
+            font-size: 0.75rem;
+        }
+
+        .step-item.active .step-badge {
+            background: var(--primary);
+        }
+
+        /* بدنه مراحل */
+        .step-content {
+            padding: 2rem;
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            color: #0369a1;
+        }
+
+        .section-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        /* فیلدها */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+        }
+
+        /* چک‌باکس‌ها و کارت‌ها */
+        .grid-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .custom-card {
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 0.9rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .custom-card:hover {
+            border-color: var(--accent);
+            background: #f0f9ff;
+        }
+
+        .custom-card input {
+            accent-color: var(--primary);
+            width: 18px;
+            height: 18px;
+            margin-left: 8px;
+        }
+
+        .custom-card.selected {
+            border-color: var(--primary);
+            background: #e0f2fe;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
+        }
+
+        .card-details {
+            display: flex;
+            align-items: center;
+        }
+
+        .cost-tag {
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: #fef3c7;
+            color: #b45309;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            border: 1px solid #fde68a;
+        }
+
+        /* جمع هزینه */
+        .total-box {
+            background: linear-gradient(135deg, #0369a1, #0284c7);
+            color: #ffffff;
+            border-radius: 14px;
+            padding: 1.2rem;
+            margin-top: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-box .price-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        /* دکمه‌های ناوبری */
+        .footer-nav {
+            padding: 1.25rem 2rem;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-prev {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-prev:hover {
+            background: #cbd5e1;
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-next:hover {
+            background: var(--primary-dark);
+        }
+
+        /* پنهان کردن دکمه‌ها */
+        .d-none {
+            visibility: hidden;
+        }
+
+        /* استایل تأیید نهایی */
+        .summary-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px dashed var(--primary);
+            line-height: 1.9;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            دعوت‌نامه چکاپ سلامت و پایش پزشکی
+        </h1>
+        <p>مرکز تخصصی مهندسی پزشکی و بیوتکنولوژی سلامت</p>
+    </div>
+
+    <!-- Stepper Indicator -->
+    <div class="stepper">
+        <div class="step-item active" id="badge-1"><span class="step-badge">۱</span> مشخصات فردی</div>
+        <div class="step-item" id="badge-2"><span class="step-badge">۲</span> انتخاب تاریخ</div>
+        <div class="step-item" id="badge-3"><span class="step-badge">۳</span> سوابق بالینی</div>
+        <div class="step-item" id="badge-4"><span class="step-badge">۴</span> تصویربرداری پزشکی</div>
+    </div>
+
+    <form id="checkupForm">
+        <!-- گام ۱: مشخصات فردی -->
+        <div class="step-content active" id="step-1">
+            <h2 class="section-title">گام اول: احراز هویت بیمار</h2>
+            <p class="section-desc">لطفاً مشخصات فردی خود را جهت ثبت پرونده الکترونیک سلامت وارد نمایید.</p>
+            
+            <div class="form-group">
+                <label for="fullName">نام و نام خانوادگی:</label>
+                <input type="text" id="fullName" placeholder="مثال: علی احمدی" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="nationalCode">کد ملی:</label>
+                <input type="text" id="nationalCode" maxlength="10" placeholder="مثال: 0012345678" required>
+            </div>
+        </div>
+
+        <!-- گام ۲: تقویم و تاریخ نوبت -->
+        <div class="step-content" id="step-2">
+            <h2 class="section-title">گام دوم: تقویم حضور</h2>
+            <p class="section-desc">تاریخ مورد نظر خود را جهت حضور در کلینیک تصویربرداری انتخاب فرمایید.</p>
+            
+            <div class="form-group">
+                <label for="visitDate">تاریخ پیشنهادی ویزیت:</label>
+                <input type="date" id="visitDate" required>
+            </div>
+        </div>
+
+        <!-- گام ۳: بیماری‌های مزمن -->
+        <div class="step-content" id="step-3">
+            <h2 class="section-title">گام سوم: سوابق بیماری‌های مزمن</h2>
+            <p class="section-desc">جهت تنظیم پروتکل ایمنی تصویربرداری، موارد زیر را مشخص نمایید.</p>
+            
+            <div class="grid-options">
+                <label class="custom-card">
+                    <div class="card-details">
+                        <input type="checkbox" name="disease" value="دیابت (قند خون)">
+                        <span>دیابت</span>
+                    </div>
+                </label>
+                <label class="custom-card">
+                    <div class="card-details">
+                        <input type="checkbox" name="disease" value="فشار خون بالا">
+                        <span>فشار خون بالا</span>
+                    </div>
+                </label>
+                <label class="custom-card">
+                    <div class="card-details">
+                        <input type="checkbox" name="disease" value="بیماری قلبی-عروقی (دارای استنت/پیس‌میکر)">
+                        <span>بیماری‌های قلبی (استنت/پیس‌میکر)</span>
+                    </div>
+                </label>
+                <label class="custom-card">
+                    <div class="card-details">
+                        <input type="checkbox" name="disease" value="نارسایی کلیوی">
+                        <span>نارسایی یا مشکلات کلیوی</span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">سایر توضیحات، جراحی‌ها یا قطعات فلزی در بدن:</label>
+                <textarea id="notes" rows="4" placeholder="در صورت داشتن سابقه آلرژی دارویی، ایمپلنت یا مصرف داروی خاص، ذکر فرمایید..."></textarea>
+            </div>
+        </div>
+
+        <!-- گام ۴: تصویربرداری و هزینه -->
+        <div class="step-content" id="step-4">
+            <h2 class="section-title">گام چهارم: سامانه‌های تصویربرداری تخصصی</h2>
+            <p class="section-desc">دستگاه‌های مدنظر خود را انتخاب فرمایید. تعرفه خدمات بر اساس سکه محاسبه می‌گردد.</p>
+            
+            <div class="grid-options">
+                <label class="custom-card">
+                    <div class="card-details">
+                        <input type="checkbox" class="modality-check" data-name="MRI (تصویربرداری تشدید مغناطیسی)" data-cost="5">
+                        <span>MRI (تشدید مغناطیسی)</span>
+                    </div>
+                    <span class="cost-tag">۵ سکه</span>
+                </label>
+
+                <label class="custom-card">
+                    <div class="card-details">
+                        <input type="checkbox" class="modality-check" data-name="PET Scan (توموگرافی گسیل پوزیترون)" data-cost="8">
+                        <span>PET Scan (توموگرافی پوزیترون)</span>
+                    </div>
+                    <span class="cost-tag">۸ سکه</span>
+                </label>
+
+                <label class="custom-card">
+                    <div class="card-details">
+                        <input type="checkbox" class="modality-check" data-name="CT Scan (سی‌تی اسکن مولتی‌اسلایس)" data-cost="4">
+                        <span>CT Scan (اسکن چند مقطعی)</span>
+                    </div>
+                    <span class="cost-tag">۴ سکه</span>
+                </label>
+
+                <label class="custom-card">
+                    <div class="card-details">
+                        <input type="checkbox" class="modality-check" data-name="سونوگرافی داپلر کالر" data-cost="2">
+                        <span>سونوگرافی کالر داپلر</span>
+                    </div>
+                    <span class="cost-tag">۲ سکه</span>
+                </label>
+            </div>
+
+            <!-- باکس مجموع هزینه به سکه -->
+            <div class="total-box">
+                <span>مجموع تعرفه انتخابی:</span>
+                <span class="price-value"><span id="totalCoins">0</span> سکه</span>
+            </div>
+        </div>
+
+        <!-- گام ۵: صفحه خلاصه و ثبت نهایی -->
+        <div class="step-content" id="step-5">
+            <h2 class="section-title">برگه تأیید نهایی دعوت‌نامه</h2>
+            <p class="section-desc">اطلاعات پرونده شما آماده ذخیره‌سازی و ارجاع به بخش مهندسی پزشکی است.</p>
+            
+            <div class="summary-card" id="summaryArea">
+                <!-- محتوا با جاوااسکریپت پر می‌شود -->
+            </div>
+        </div>
+
+        <!-- ناوبری پایین -->
+        <div class="footer-nav">
+            <button type="button" class="btn btn-prev d-none" id="prevBtn" onclick="changeStep(-1)">مرحله قبل</button>
+            <button type="button" class="btn btn-next" id="nextBtn" onclick="changeStep(1)">مرحله بعد</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let currentStep = 1;
+    const maxStep = 5;
+
+    // به‌روزرسانی هزینه به سکه هنگام انتخاب دستگاه‌ها
+    const modalityCheckboxes = document.querySelectorAll('.modality-check');
+    const totalCoinsElem = document.getElementById('totalCoins');
+
+    modalityCheckboxes.forEach(chk => {
+        chk.addEventListener('change', () => {
+            chk.closest('.custom-card').classList.toggle('selected', chk.checked);
+            calculateTotal();
+        });
+    });
+
+    // استایل انتخابی چک‌باکس‌های بیماری مزمن
+    document.querySelectorAll('input[name="disease"]').forEach(chk => {
+        chk.addEventListener('change', () => {
+            chk.closest('.custom-card').classList.toggle('selected', chk.checked);
+        });
+    });
+
+    function calculateTotal() {
+        let total = 0;
+        modalityCheckboxes.forEach(chk => {
+            if (chk.checked) {
+                total += parseInt(chk.getAttribute('data-cost'));
+            }
+        });
+        totalCoinsElem.textContent = total;
+    }
+
+    function changeStep(direction) {
+        // اعتبارسنجی فیلدها قبل از رفتن به مرحله بعد
+        if (direction === 1) {
+            if (currentStep === 1) {
+                const name = document.getElementById('fullName').value.trim();
+                const code = document.getElementById('nationalCode').value.trim();
+                if (!name || code.length < 8) {
+                    alert('لطفاً نام و کد ملی معتبر را وارد فرمایید.');
+                    return;
+                }
+            } else if (currentStep === 2) {
+                const date = document.getElementById('visitDate').value;
+                if (!date) {
+                    alert('لطفاً تاریخ مراجعه را مشخص فرمایید.');
+                    return;
+                }
+            } else if (currentStep === 4) {
+                // آماده‌سازی برگه تأییدیه قبل از گام ۵
+                buildSummary();
+            } else if (currentStep === 5) {
+                alert('درخواست چکاپ و تصویربرداری با موفقیت ثبت گردید.');
+                return;
+            }
+        }
+
+        // تغییر مرحله
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        if (currentStep <= 4) {
+            document.getElementById(`badge-${currentStep}`)?.classList.remove('active');
+        }
+
+        currentStep += direction;
+
+        document.getElementById(`step-${currentStep}`).classList.add('active');
+        if (currentStep <= 4) {
+            document.getElementById(`badge-${currentStep}`)?.classList.add('active');
+        }
+
+        // تنظیم دکمه‌ها
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        if (currentStep === 1) {
+            prevBtn.classList.add('d-none');
+        } else {
+            prevBtn.classList.remove('d-none');
+        }
+
+        if (currentStep === maxStep) {
+            nextBtn.textContent = 'ثبت و تایید نهایی نوبت';
+            nextBtn.style.background = 'var(--success)';
+        } else {
+            nextBtn.textContent = 'مرحله بعد';
+            nextBtn.style.background = 'var(--primary)';
+        }
+    }
+
+    function buildSummary() {
+        const name = document.getElementById('fullName').value;
+        const code = document.getElementById('nationalCode').value;
+        const date = document.getElementById('visitDate').value;
+        const notes = document.getElementById('notes').value || 'ثبت نشده';
+
+        const diseases = Array.from(document.querySelectorAll('input[name="disease"]:checked'))
+            .map(c => c.value);
+        const diseasesText = diseases.length > 0 ? diseases.join('، ') : 'موردی اعلام نگردید';
+
+        const modalities = Array.from(document.querySelectorAll('.modality-check:checked'))
+            .map(c => c.getAttribute('data-name'));
+        const modalitiesText = modalities.length > 0 ? modalities.join('، ') : 'هیچ دستگاهی انتخاب نشده است';
+
+        const coins = document.getElementById('totalCoins').textContent;
+
+        const summaryHTML = `
+            <p><strong>نام و نام خانوادگی:</strong> ${name}</p>
+            <p><strong>کد ملی:</strong> ${code}</p>
+            <p><strong>تاریخ ویزیت:</strong> ${date}</p>
+            <p><strong>سوابق بالینی اعلام‌شده:</strong> ${diseasesText}</p>
+            <p><strong>توضیحات تکمیلی:</strong> ${notes}</p>
+            <p><strong>مدالیته‌های تصویربرداری انتخابی:</strong> ${modalitiesText}</p>
+            <p style="margin-top: 8px; font-weight: bold; color: #0369a1;">
+                <strong>کل هزینه قابل پرداخت:</strong> ${coins} سکه
+            </p>
+        `;
+        document.getElementById('summaryArea').innerHTML = summaryHTML;
+    }
+</script>
+
+</body>
+</html>
